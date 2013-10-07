@@ -123,6 +123,12 @@ public class IvyClasspathContainerMapper {
                             + artifact.getName());
                 }
             } else if (artifact.getLocalFile() != null && accept(artifact.getArtifact())) {
+                IPath classpathArtifact = getArtifactPath(artifact, "");
+                if (classpathArtifact == null) {
+                    IvyDEMessage.verbose("Skipping " + artifact.getName() + " because it wasn't removed from retrieved artifacts");
+                    continue;
+                }
+
                 IvyDEMessage.verbose("Adding " + artifact.getName() + " to the classpath");
 
                 // handle unzipped jar with 'Bundle-Classpath'
@@ -245,6 +251,9 @@ public class IvyClasspathContainerMapper {
             if (pathSet != null && !pathSet.isEmpty()) {
                 return new Path((String) pathSet.iterator().next() + innerPath);
             }
+            // If we're using retrievedArtifacts, and this artifact was thrown out for
+            // whatever reason, respect that decision.
+            return null;
         }
         return new Path(artifact.getLocalFile().getAbsolutePath() + innerPath);
     }
