@@ -76,6 +76,10 @@ public class IvyResolver {
 
     private String retrieveTypes = null;
 
+    private boolean makeSymlinks = false;
+    
+    private String overwriteMode = RetrieveOptions.OVERWRITEMODE_NEWER;
+
     private final String ivyXmlPath;
 
     private boolean useCacheOnly = IvyPlugin.getPreferenceStoreHelper().isOffline();
@@ -104,6 +108,14 @@ public class IvyResolver {
 
     public void setRetrieveTypes(String retrieveTypes) {
         this.retrieveTypes = retrieveTypes;
+    }
+
+    public void setMakeSymlinks(boolean makeSymlinks) {
+        this.makeSymlinks = makeSymlinks;
+    }
+
+    public void setOverwriteMode(String overwriteMode) {
+        this.overwriteMode = overwriteMode;
     }
 
     public void setUseCacheOnly(boolean useCacheOnly) {
@@ -356,6 +368,8 @@ public class IvyResolver {
         monitor.setTaskName("retrieving dependencies in " + pattern);
         RetrieveOptions options = new RetrieveOptions();
         options.setSync(retrieveSync);
+        options.setMakeSymlinks(makeSymlinks);
+        options.setOverwriteMode(overwriteMode);
         if (!result.isPreviousUsed()) {
             options.setResolveId(result.getReport().getResolveId());
         }

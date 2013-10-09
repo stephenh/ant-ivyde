@@ -121,6 +121,10 @@ public final class PreferenceConstants {
 
     public static final String RETRIEVED_CLASSPATH_SYNC = "retrievedClasspath.sync";
 
+    public static final String RETRIEVED_CLASSPATH_MAKE_SYMLINKS = "retrievedClasspath.makeSymLinks";
+
+    public static final String RETRIEVED_CLASSPATH_OVERWRITE_MODE = "retrievedClasspath.overwriteMode";
+
     public static final String RETRIEVED_CLASSPATH_TYPES = "retrievedClasspath.types";
 
     public static final String MAP_IF_ONLY_ONE_SOURCE = "mapIfOnlyOneSource";

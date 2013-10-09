@@ -58,6 +58,8 @@ public class ClasspathEntriesResolver extends IvyResolver {
             setRetrievePattern(setup.getRetrievePattern());
             setRetrieveSync(setup.isRetrieveSync());
             setRetrieveTypes(setup.getRetrieveTypes());
+            setMakeSymlinks(setup.isMakeSymLinks());
+            setOverwriteMode(setup.getOverrideMode());
         }
     }
 

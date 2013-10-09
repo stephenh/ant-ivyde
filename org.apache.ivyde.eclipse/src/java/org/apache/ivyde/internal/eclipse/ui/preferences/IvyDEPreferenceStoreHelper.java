@@ -85,6 +85,10 @@ public class IvyDEPreferenceStoreHelper {
                 .getString(PreferenceConstants.RETRIEVED_CLASSPATH_PATTERN));
         retrieveSetup.setRetrieveSync(prefStore
                 .getBoolean(PreferenceConstants.RETRIEVED_CLASSPATH_SYNC));
+        retrieveSetup.setMakeSymLinks(prefStore
+                .getBoolean(PreferenceConstants.RETRIEVED_CLASSPATH_MAKE_SYMLINKS));
+        retrieveSetup.setOverrideMode(prefStore
+                .getString(PreferenceConstants.RETRIEVED_CLASSPATH_OVERWRITE_MODE));
         retrieveSetup.setRetrieveTypes(prefStore
                 .getString(PreferenceConstants.RETRIEVED_CLASSPATH_TYPES));
         setup.setRetrieveSetup(retrieveSetup);
@@ -106,6 +110,10 @@ public class IvyDEPreferenceStoreHelper {
             retrieveSetup.isRetrieveSync());
         prefStore.setValue(PreferenceConstants.RETRIEVED_CLASSPATH_TYPES,
             retrieveSetup.getRetrieveTypes());
+        prefStore.setValue(PreferenceConstants.RETRIEVED_CLASSPATH_MAKE_SYMLINKS,
+            retrieveSetup.isMakeSymLinks());
+        prefStore.setValue(PreferenceConstants.RETRIEVED_CLASSPATH_OVERWRITE_MODE,
+            retrieveSetup.getOverrideMode());
     }
 
     public MappingSetup getMappingSetup() {

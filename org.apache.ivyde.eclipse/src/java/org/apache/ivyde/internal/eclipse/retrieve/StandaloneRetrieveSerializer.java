@@ -73,6 +73,10 @@ public class StandaloneRetrieveSerializer {
 
     private static final String RETRIEVE_SYNC = "sync";
 
+    private static final String RETRIEVE_SYM_LINKS = "symlinks";
+
+    private static final String RETRIEVE_OVERWRITE_MODE = "overwriteMode";
+
     private static final String RETRIEVE_TYPES = "types";
 
     private static final String RETRIEVE_CONFS = "confs";
@@ -194,6 +198,14 @@ public class StandaloneRetrieveSerializer {
 
         attr = document.createAttribute(RETRIEVE_SYNC);
         attr.setValue(Boolean.toString(retrieveSetup.isRetrieveSync()));
+        attributes.setNamedItem(attr);
+
+        attr = document.createAttribute(RETRIEVE_SYM_LINKS);
+        attr.setValue(Boolean.toString(retrieveSetup.isMakeSymLinks()));
+        attributes.setNamedItem(attr);
+
+        attr = document.createAttribute(RETRIEVE_OVERWRITE_MODE);
+        attr.setValue(retrieveSetup.getOverrideMode());
         attributes.setNamedItem(attr);
     }
 
@@ -322,6 +334,12 @@ public class StandaloneRetrieveSerializer {
 
         String sync = getAttribute(attributes, RETRIEVE_SYNC);
         retrieveSetup.setRetrieveSync(Boolean.valueOf(sync).booleanValue());
+
+        String symlinks = getAttribute(attributes, RETRIEVE_SYM_LINKS);
+        retrieveSetup.setMakeSymLinks(Boolean.valueOf(symlinks).booleanValue());
+
+        String overwriteMode = getAttribute(attributes, RETRIEVE_OVERWRITE_MODE);
+        retrieveSetup.setOverrideMode(overwriteMode);
 
         return retrieveSetup;
     }
