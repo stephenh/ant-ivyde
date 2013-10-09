@@ -123,7 +123,7 @@ public class IvyClasspathContainerMapper {
                             + artifact.getName());
                 }
             } else if (artifact.getLocalFile() != null && accept(artifact.getArtifact())) {
-                IPath classpathArtifact = getArtifactPath(artifact, "");
+                IPath classpathArtifact = getArtifactPath(artifact, "", false);
                 if (classpathArtifact == null) {
                     IvyDEMessage.verbose("Skipping " + artifact.getName() + " because it wasn't removed from retrieved artifacts");
                     continue;
@@ -180,7 +180,7 @@ public class IvyClasspathContainerMapper {
 
     private IClasspathEntry buildEntry(ArtifactDownloadReport artifact, IAccessRule[] rules,
             File manifestFile, String innerPath) {
-        IPath classpathArtifact = getArtifactPath(artifact, "/" + innerPath);
+        IPath classpathArtifact = getArtifactPath(artifact, "/" + innerPath, true);
         if (!classpathArtifact.toFile().exists()) {
             // an non existing inner jar is 'just' a broken MANIFEST.MF, which happens sometimes
             // with Eclipse bundles
@@ -192,7 +192,7 @@ public class IvyClasspathContainerMapper {
     }
 
     private IClasspathEntry buildEntry(ArtifactDownloadReport artifact) {
-        IPath classpathArtifact = getArtifactPath(artifact, "");
+        IPath classpathArtifact = getArtifactPath(artifact, "", true);
         return doBuildEntry(artifact, classpathArtifact, null);
     }
 
@@ -245,15 +245,20 @@ public class IvyClasspathContainerMapper {
         return rules;
     }
 
-    private Path getArtifactPath(ArtifactDownloadReport artifact, String innerPath) {
+    private Path getArtifactPath(ArtifactDownloadReport artifact, String innerPath, boolean fallBackToIvyCacheLocation) {
         if (retrievedArtifacts != null) {
             Set<String> pathSet = retrievedArtifacts.get(artifact);
             if (pathSet != null && !pathSet.isEmpty()) {
                 return new Path((String) pathSet.iterator().next() + innerPath);
             }
-            // If we're using retrievedArtifacts, and this artifact was thrown out for
-            // whatever reason, respect that decision.
-            return null;
+            if (!fallBackToIvyCacheLocation) {
+	            // If we're using retrievedArtifacts, not finding the artifact means it conflicted
+                // with some other org/module's artifact. The behavior of ant/Ivy in this case is
+                // to skip the file, which we want to do here as well for consistency. (Previously
+                // IvyDE could cheat and put the conflicted artifact's ivycache location on the
+                // classpath, but that was confusing compared to the behavior of ant.)
+	            return null;
+            }
         }
         return new Path(artifact.getLocalFile().getAbsolutePath() + innerPath);
     }
@@ -275,7 +280,7 @@ public class IvyClasspathContainerMapper {
             if (otherAdr.getLocalFile() != null && matcher.matchName(artifact, a.getName())
                     && a.getModuleRevisionId().equals(artifact.getModuleRevisionId())
                     && matcher.match(a)) {
-                return getArtifactPath(otherAdr, innerPath);
+                return getArtifactPath(otherAdr, innerPath, true);
             }
         }
         // we haven't found source artifact in resolved artifacts,
@@ -293,7 +298,7 @@ public class IvyClasspathContainerMapper {
                         ArtifactDownloadReport metaAdr = ivy.getResolveEngine().download(
                             metaArtifact, new DownloadOptions());
                         if (metaAdr.getLocalFile() != null && metaAdr.getLocalFile().exists()) {
-                            return getArtifactPath(metaAdr, innerPath);
+                            return getArtifactPath(metaAdr, innerPath, true);
                         }
                     }
                     // keep a reference to the artifact so we could fall back
@@ -315,7 +320,6 @@ public class IvyClasspathContainerMapper {
                 }
             }
         }
-
         return null;
     }
 
