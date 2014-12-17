@@ -46,6 +46,8 @@ public class RetrieveAction extends Action {
         resolver.setRetrievePattern(retrieveSetup.getRetrievePattern());
         resolver.setRetrieveSync(retrieveSetup.isRetrieveSync());
         resolver.setRetrieveTypes(retrieveSetup.getRetrieveTypes());
+        resolver.setMakeSymlinks(retrieveSetup.isMakeSymLinks());
+        resolver.setOverwriteMode(retrieveSetup.getOverrideMode());
         ResolveRequest request = new ResolveRequest(resolver, setup.getState());
         ivyResolveJob.addRequest(request);
     }

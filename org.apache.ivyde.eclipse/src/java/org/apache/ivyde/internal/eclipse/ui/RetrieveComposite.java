@@ -17,6 +17,9 @@
  */
 package org.apache.ivyde.internal.eclipse.ui;
 
+import java.util.Arrays;
+
+import org.apache.ivy.core.retrieve.RetrieveOptions;
 import org.apache.ivyde.eclipse.cp.RetrieveSetup;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
@@ -25,11 +28,18 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 public class RetrieveComposite extends Composite {
+
+    private static final String[] OVERWRITE_MODES = new String[] { 
+        RetrieveOptions.OVERWRITEMODE_NEWER,
+        RetrieveOptions.OVERWRITEMODE_DIFFERENT,
+        RetrieveOptions.OVERWRITEMODE_ALWAYS,
+        RetrieveOptions.OVERWRITEMODE_NEVER };
 
     public static final String TOOLTIP_RETRIEVE_PATTERN = "Exemple: lib/[conf]/[artifact].[ext]\n"
             + "To copy artifacts in folder named lib without revision by folder"
@@ -46,6 +56,12 @@ public class RetrieveComposite extends Composite {
     private PathEditor retrievePatternText;
 
     private Button retrieveSyncButton;
+
+    private Button retrieveSymlinkButton;
+
+    private Label overwriteModeLabel;
+
+    private Combo overwriteModeCombo;
 
     private Text confsText;
 
@@ -84,8 +100,21 @@ public class RetrieveComposite extends Composite {
 
         retrieveSyncButton = new Button(this, SWT.CHECK);
         retrieveSyncButton.setText("Delete old retrieved artifacts");
-        retrieveSyncButton.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false,
-                2, 1));
+        retrieveSyncButton.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false, 2, 1));
+        
+        retrieveSymlinkButton = new Button(this, SWT.CHECK);
+        retrieveSymlinkButton.setText("Make symlinks");
+        retrieveSymlinkButton.setLayoutData(new GridData(GridData.FILL, GridData.FILL, false, false, 2, 1));
+
+        overwriteModeLabel = new Label(this, SWT.NONE);
+        overwriteModeLabel.setText("Overwrite mode:");
+
+        overwriteModeCombo = new Combo(this, SWT.READ_ONLY);
+        overwriteModeCombo.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
+        overwriteModeCombo.setToolTipText("Overwrite mode");
+        for (int i = 0; i < OVERWRITE_MODES.length; i++) {
+            overwriteModeCombo.add(OVERWRITE_MODES[i]);
+        }
 
         if (withConf) {
             Label label = new Label(this, SWT.NONE);
@@ -108,7 +137,9 @@ public class RetrieveComposite extends Composite {
     public RetrieveSetup getRetrieveSetup() {
         RetrieveSetup setup = new RetrieveSetup();
         setup.setRetrieveSync(retrieveSyncButton.getSelection());
+        setup.setMakeSymLinks(retrieveSymlinkButton.getSelection());
         setup.setRetrievePattern(retrievePatternText.getText().getText());
+        setup.setOverrideMode(OVERWRITE_MODES[Math.min(overwriteModeCombo.getSelectionIndex(), OVERWRITE_MODES.length)]);
         if (confsText != null) {
             setup.setRetrieveConfs(confsText.getText());
         }
@@ -119,6 +150,8 @@ public class RetrieveComposite extends Composite {
     public void init(RetrieveSetup setup) {
         retrievePatternText.getText().setText(setup.getRetrievePattern());
         retrieveSyncButton.setSelection(setup.isRetrieveSync());
+        retrieveSymlinkButton.setSelection(setup.isMakeSymLinks());
+        overwriteModeCombo.select(Math.max(Arrays.asList(OVERWRITE_MODES).indexOf(setup.getOverrideMode()), 0));
         if (confsText != null) {
             confsText.setText(setup.getRetrieveConfs());
         }
@@ -130,6 +163,9 @@ public class RetrieveComposite extends Composite {
         super.setEnabled(enabled);
         retrievePatternText.setEnabled(enabled);
         retrieveSyncButton.setEnabled(enabled);
+        retrieveSymlinkButton.setEnabled(enabled);
+        overwriteModeLabel.setEnabled(enabled);
+        overwriteModeCombo.setEnabled(enabled);
         if (confsText != null) {
             confsText.setEnabled(enabled);
         }

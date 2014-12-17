@@ -17,6 +17,8 @@
  */
 package org.apache.ivyde.eclipse.cp;
 
+import org.apache.ivy.core.retrieve.RetrieveOptions;
+
 /**
  * This class is just a simple bean defining the properties which configure an IvyDE classpath
  * container.
@@ -31,6 +33,10 @@ public class RetrieveSetup {
 
     private String retrieveTypes = "*";
 
+    private String overrideMode = RetrieveOptions.OVERWRITEMODE_NEWER;
+
+    private boolean makeSymLinks = false;
+
     /**
      * Default constructor
      */
@@ -42,6 +48,8 @@ public class RetrieveSetup {
         this.retrievePattern = setup.retrievePattern;
         this.retrieveConfs = setup.retrieveConfs;
         this.retrieveTypes = setup.retrieveTypes;
+        this.overrideMode = setup.overrideMode;
+        this.makeSymLinks = setup.makeSymLinks;
     }
 
     public String getRetrievePattern() {
@@ -74,6 +82,22 @@ public class RetrieveSetup {
 
     public void setRetrieveTypes(String retrieveTypes) {
         this.retrieveTypes = retrieveTypes;
+    }
+
+    public String getOverrideMode() {
+        return overrideMode;
+    }
+
+    public void setOverrideMode(String overrideMode) {
+        this.overrideMode = overrideMode;
+    }
+
+    public boolean isMakeSymLinks() {
+        return makeSymLinks;
+    }
+
+    public void setMakeSymLinks(boolean makeSymLinks) {
+        this.makeSymLinks = makeSymLinks;
     }
 
 }

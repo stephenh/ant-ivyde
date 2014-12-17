@@ -198,8 +198,14 @@ public final class IvyClasspathContainerConfAdapter {
                 classpathSetup.getRetrieveSetup().setRetrievePattern(value);
                 conf.setClassthProjectSpecific(true);
             } else if (parameter[0].equals("retrievedClasspathSync")) {
-                classpathSetup.getRetrieveSetup().setRetrieveSync(
+                classpathSetup.getRetrieveSetup().setRetrieveSync(Boolean.valueOf(value).booleanValue());
+                conf.setClassthProjectSpecific(true);
+            } else if (parameter[0].equals("retrievedClasspathMakeSymLinks")) {
+                classpathSetup.getRetrieveSetup().setMakeSymLinks(
                     Boolean.valueOf(value).booleanValue());
+                conf.setClassthProjectSpecific(true);
+            } else if (parameter[0].equals("retrievedClasspathOverwriteMode")) {
+                classpathSetup.getRetrieveSetup().setOverrideMode(value);
                 conf.setClassthProjectSpecific(true);
             } else if (parameter[0].equals("retrievedClasspathTypes")) {
                 classpathSetup.getRetrieveSetup().setRetrieveTypes(value);
@@ -423,6 +429,8 @@ public final class IvyClasspathContainerConfAdapter {
                     RetrieveSetup retrieveSetup = setup.getRetrieveSetup();
                     append(path, "retrievedClasspathPattern", retrieveSetup.getRetrievePattern());
                     append(path, "retrievedClasspathSync", retrieveSetup.isRetrieveSync());
+                    append(path, "retrievedClasspathMakeSymLinks", retrieveSetup.isMakeSymLinks());
+                    append(path, "retrievedClasspathOverwriteMode", retrieveSetup.getOverrideMode());
                     append(path, "retrievedClasspathTypes", retrieveSetup.getRetrieveTypes());
                 }
             }
