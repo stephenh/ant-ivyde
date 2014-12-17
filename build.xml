@@ -69,7 +69,7 @@
         <property name="forceContextQualifier" value="${version.qualifier}-${DSTAMP}${TSTAMP}-RELEASE" />
     </target>
 
-    <target name="dist" depends="generate-eclipse-doc,build,package-binaries,package-sources,checksum" description="Build every artifacts for distribution" />
+    <target name="dist" depends="build,package-binaries,package-sources,checksum" description="Build every artifacts for distribution" />
 
     <target name="clean" description="Remove every build artifacts">
         <delete dir="${work.dir}" />
